@@ -2,7 +2,7 @@ import { LoggerService } from "./logger.service"
 import { CalculatorService } from "./calculator.service"
 import { TestBed } from "@angular/core/testing";
 
-fdescribe('CalculatorService', () => {
+describe('CalculatorService', () => {
     let loggerSpy: any;
     let calculator: CalculatorService;
 
@@ -18,8 +18,7 @@ fdescribe('CalculatorService', () => {
             ]
         })
 
-        calculator = TestBed.get(CalculatorService
-        )
+        calculator = TestBed.get(CalculatorService)
     })
 
     it('should add two number', () => {
@@ -41,5 +40,6 @@ fdescribe('CalculatorService', () => {
 
         expect(loggerSpy.log).toHaveBeenCalledTimes(1);
 
-    })
+    });
+
 })
