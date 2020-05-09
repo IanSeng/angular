@@ -6,7 +6,7 @@ import { Course } from '../model/course';
 import { HttpErrorResponse } from '@angular/common/http';
 
 
-fdescribe('CoursesService', () => {
+describe('CoursesService', () => {
 
     let coursesService: CoursesService,
         httpTestingController: HttpTestingController;
@@ -130,6 +130,7 @@ fdescribe('CoursesService', () => {
     it('should find a list of lessons', () => {
         // since only courseID is required we can leave the rest of the params blank
         coursesService.findLessons(12).subscribe(lessons => {
+
             expect(lessons).toBeTruthy();
             expect(lessons.length).toEqual(3); //default pageSize is 3
         })
