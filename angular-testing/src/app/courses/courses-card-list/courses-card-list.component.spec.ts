@@ -11,7 +11,7 @@ import { By } from "@angular/platform-browser";
 // 2. Predicate is an function to return true or false
 
 // Testing presentational components 
-fdescribe('CoursesCardListComponent', () => {
+describe('CoursesCardListComponent', () => {
     // instances 
     let component: CoursesCardListComponent;
     let fixture: ComponentFixture<CoursesCardListComponent>;  // fixture is to test utility, we can use it to obtain instance of the component (ex we can also use it access to dom)

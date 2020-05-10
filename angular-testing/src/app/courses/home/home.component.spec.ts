@@ -1,4 +1,4 @@
-import { TestBed, async, ComponentFixture } from "@angular/core/testing"
+import { TestBed, async, ComponentFixture, fakeAsync, flush } from "@angular/core/testing"
 import { CoursesModule } from "../courses.module"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { HomeComponent } from "./home.component"
@@ -12,7 +12,10 @@ import { By } from "@angular/platform-browser"
 
 // Note: 
 // 1. Home component is known as the smart/comtainer component, which it gets data and doesnt have presentation responsibility. It is usually top level 
-fdescribe('HomeComponent', () => {
+// 2. why use async when fakeasync is better? It is because it support HTTP request, it is useful when we do HTTP call to backend
+// 3. async at beforeEach is to make sure the block get resolved before moving forward to the tests. which it wait for promise (then) to resolve, we can also use fakeAsync but we would need a flushMicrotasks for the promise
+
+describe('HomeComponent', () => {
     let fixture: ComponentFixture<HomeComponent>;
     let component: HomeComponent;
     let el: DebugElement;
@@ -23,7 +26,7 @@ fdescribe('HomeComponent', () => {
     const advanceCourses = Object.values(COURSES).sort(sortCoursesBySeqNo).filter((course: Course) => course.category == 'BEGINNER') as Course[];
     const allCourses = Object.values(COURSES).sort(sortCoursesBySeqNo) as Course[];
 
-    beforeEach(async(() => {
+    beforeEach(async(() => { // async is similar to fakeasync, it going to detect all of the async code inside the block and wait for the promite to done.  
         const courseService = jasmine.createSpyObj('CoursesService', ['findAllCourses']) //[] is the methods we want to mock
         TestBed.configureTestingModule({
             imports: [CoursesModule, NoopAnimationsModule], // NoopAnimationModule will ignore the animation
@@ -77,28 +80,55 @@ fdescribe('HomeComponent', () => {
         expect(tabs.length).toBe(2);
     })
 
-    // simulate user DOM interaction (sync component)
-    it("should display advanced courses when tab clicked", () => {
+    // simulate user DOM interaction (async component - with fakeAsync)
+    fit("should display advanced courses when tab clicked - fake Async", fakeAsync(() => {
         coursesService.findAllCourses.and.returnValue(of(allCourses)); // of will take the value and create an observable and it is synchoronous
 
         fixture.detectChanges(); // to apply data to the DOM
 
         const tabs = el.queryAll(By.css(".mat-tab-label"));
 
-        // Simulating user click
+        // Simulating user click (async)
         click(tabs[1]);
+
+        fixture.detectChanges(); // to apply data to the DOM (update DOM there is changes)
+
+        flush(); // we neeeded to use flush here because click(tabs[1]) is async behaviour built in. 
+
+        const cardTitles = el.queryAll(By.css('.mat-tab-body-active'));
+
+        expect(cardTitles.length).toBeGreaterThan(0);
+
+        expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course");
+
+    }));
+
+    // simulate user DOM interaction (async component - with Async)
+    fit("should display advanced courses when tab clicked - async", async(() => {  // async does not have function like flush or tick
+        coursesService.findAllCourses.and.returnValue(of(allCourses)); // of will take the value and create an observable and it is synchoronous
 
         fixture.detectChanges(); // to apply data to the DOM
 
-        const cardTitle = el.queryAll(By.css('.mat-card-title'));
+        const tabs = el.queryAll(By.css(".mat-tab-label"));
 
-        expect(cardTitle.length).toBeGreaterThan(0);
+        // Simulating user click (async)
+        click(tabs[1]);
 
-        expect(cardTitle[0].nativeElement.textContent).toContain("Angular Security Course");
+        fixture.detectChanges(); // to apply data to the DOM (update DOM there is changes)
+
+        fixture.whenStable().then(() => { // notify when all async is completed, but the drawback of here is not having control over of time like tick and the way of writing is not like synchronous
+            console.log("called whenStable()");
+
+            const cardTitles = el.queryAll(By.css('.mat-tab-body-active'));
+
+            expect(cardTitles.length).toBeGreaterThan(0);
+
+            expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course");
+
+        });
 
 
-    })
-
+    }));
 
 })
 
