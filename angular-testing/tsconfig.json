@@ -1,6 +1,11 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": "../node_modules",
+    "types": [
+      "cypress"
+    ],
     "module": "esnext",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -17,5 +22,8 @@
       "dom",
       "ES2017.object"
     ]
-  }
+  },
+  "include": [
+    "**/*.*"
+  ]
 }
