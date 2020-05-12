@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { switchMap, map } from 'rxjs/operators';
 import { Post } from './post.model';
+import { PostsService } from './posts.service';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,29 +11,31 @@ import { Post } from './post.model';
 })
 export class AppComponent implements OnInit {
   loadedPosts: Post[] = [];
+  //loadedPosts: Observable<Post[]>
   loading = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private postsService: PostsService) { }
 
   ngOnInit() {
-    this.onFetchData();
+    this.loading = true;
+    this.postsService.fetchPosts().subscribe(post => {
+      this.loading = false;
+      this.loadedPosts= post;
+    })
   }
 
   onCreatePost(postData: { title: string; content: string }) {
     // Send Http request
-    this.http
-      .post<{ name: string }>(
-        'https://http-learn-5279a.firebaseio.com/posts.json',
-        postData
-      )
-      .subscribe(responseData => {
-        console.log(responseData);
-      });
+    this.postsService.createAndStorePost(postData.title, postData.content);
   }
 
   onFetchPosts() {
     // Send Http request
-    this.onFetchData();
+    this.loading = true;
+    this.postsService.fetchPosts().subscribe(post => {
+      this.loading = false;
+      this.loadedPosts= post;
+    })
   }
 
   onClearPosts() {
@@ -41,22 +45,9 @@ export class AppComponent implements OnInit {
   // Get call to retrive data
   private onFetchData() {
     this.loading = true;
-    this.http
-      .get<{[key: string]:Post}>(
-        'https://http-learn-5279a.firebaseio.com/posts.json').pipe(
-          map((responseData) => {
-            const objectArray: Post[] = [];
-            for (const key in responseData) {
-              if (responseData.hasOwnProperty) {
-                objectArray.push({ ...responseData[key], id: key })
-              }
-            }
-            return objectArray;
-          })
-        )
-      .subscribe(post => {
-        this.loadedPosts = post;
-        this.loading = false;
-      })
+    this.postsService.postGetSubject.subscribe(result => {
+      this.loadedPosts = result.post
+    })
+    this.postsService.fetchPosts();
   }
 }
