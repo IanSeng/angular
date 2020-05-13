@@ -52,10 +52,15 @@
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
       <p *ngIf="loadedPosts.length < 1 && !loading">No posts available!</p>
-      <p *ngIf="loading">loading...</p>
+      <p *ngIf="loading && !error">loading...</p>
+      <div class="alart alert-danger" *ngIf="error">
+        <h1>An Error Occured!</h1>
+        <p>{{ error }}</p>
+        <button class="btn btn-danger" (click)="onHandleError()">Okay</button>
+      </div>
       <ul *ngIf="loadedPosts.length >= 1 && !loading" class="list-group">
         <li *ngFor="let post of loadedPosts" class="list-group-item">
-          <h3>{{ post.title }}</h3>
+          <h3>{{ post.title  }}</h3>
           <p>{{ post.content }}</p>
         </li>
       </ul>
