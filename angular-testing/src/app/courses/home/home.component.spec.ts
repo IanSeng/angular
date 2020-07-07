@@ -81,7 +81,7 @@ describe('HomeComponent', () => {
     })
 
     // simulate user DOM interaction (async component - with fakeAsync)
-    fit("should display advanced courses when tab clicked - fake Async", fakeAsync(() => {
+    it("should display advanced courses when tab clicked - fake Async", fakeAsync(() => {
         coursesService.findAllCourses.and.returnValue(of(allCourses)); // of will take the value and create an observable and it is synchoronous
 
         fixture.detectChanges(); // to apply data to the DOM
@@ -104,7 +104,7 @@ describe('HomeComponent', () => {
     }));
 
     // simulate user DOM interaction (async component - with Async)
-    fit("should display advanced courses when tab clicked - async", async(() => {  // async does not have function like flush or tick
+    it("should display advanced courses when tab clicked - async", async(() => {  // async does not have function like flush or tick
         coursesService.findAllCourses.and.returnValue(of(allCourses)); // of will take the value and create an observable and it is synchoronous
 
         fixture.detectChanges(); // to apply data to the DOM

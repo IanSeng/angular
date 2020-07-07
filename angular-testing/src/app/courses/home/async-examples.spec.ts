@@ -3,7 +3,7 @@ import { of } from "rxjs";
 import { delay } from "rxjs/operators";
 // Note: 
 // 1. testing observable is very similar to testing timeout function
-fdescribe("Async Testing Examples", () => {
+describe("Async Testing Examples", () => {
 
     // (dont do this) This way of test is needed to be avoided because in a larger code base we wont know how long it take a async code to take and etc
     it("Asynchronous test example with Jasmine done()", (done: DoneFn) => { // Done callback is from Jasmine 

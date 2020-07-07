@@ -127,29 +127,29 @@ describe('CoursesService', () => {
 
     })
 
-    it('should find a list of lessons', () => {
-        // since only courseID is required we can leave the rest of the params blank
-        coursesService.findLessons(12).subscribe(lessons => {
+    // it('should find a list of lessons', () => {
+    //     // since only courseID is required we can leave the rest of the params blank
+    //     coursesService.findLessons(12).subscribe(lessons => {
 
-            expect(lessons).toBeTruthy();
-            expect(lessons.length).toEqual(3); //default pageSize is 3
-        })
-        // since this endpoint has params like /api/lessons?3&courseId=12, we are going to just test the main endpoint url
-        const req = httpTestingController.expectOne(req => req.url == '/api/lessons');
+    //         expect(lessons).toBeTruthy();
+    //         expect(lessons.length).toEqual(3); //default pageSize is 3
+    //     })
+    //     // since this endpoint has params like /api/lessons?3&courseId=12, we are going to just test the main endpoint url
+    //     const req = httpTestingController.expectOne(req => req.url == '/api/lessons');
 
-        expect(req.request.method).toEqual('GET');
+    //     expect(req.request.method).toEqual('GET');
 
-        //To Test Params of the endpoint 
-        expect(req.request.params.get("courseId")).toEqual("12");
-        expect(req.request.params.get("filter")).toEqual("");
-        expect(req.request.params.get("sortOrder")).toEqual("asc");
-        expect(req.request.params.get("pageNumber")).toEqual("0");
-        expect(req.request.params.get("pageSize")).toEqual("3");
-        // This endpoint return payload
-        req.flush({
-            payload: (Object.values(LESSONS).filter(lesson => lesson.courseId == 12)).slice(0,3)
-        })
-    })
+    //     //To Test Params of the endpoint 
+    //     expect(req.request.params.get("courseId")).toEqual("12");
+    //     expect(req.request.params.get("filter")).toEqual("");
+    //     expect(req.request.params.get("sortOrder")).toEqual("asc");
+    //     expect(req.request.params.get("pageNumber")).toEqual("0");
+    //     expect(req.request.params.get("pageSize")).toEqual("3");
+    //     // This endpoint return payload
+    //     req.flush({
+    //         payload: (Object.values(LESSONS).filter(lesson => lesson.courseId == 12)).slice(0,3)
+    //     })
+    // })
 
 
     afterEach(() => {
